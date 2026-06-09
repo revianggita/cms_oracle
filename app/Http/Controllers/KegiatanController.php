@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kegiatan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,7 +12,8 @@ class KegiatanController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::latest()->paginate(10);
+        $kegiatans = Kegiatan::latest()->get();
+
         return view('kegiatan.index', compact('kegiatans'));
     }
 
@@ -20,7 +22,6 @@ class KegiatanController extends Controller
         return view('kegiatan.create');
     }
 
-    // ✅ FIX STORE (NO DB::TABLE)
     public function store(Request $request)
     {
         $request->validate([
@@ -31,8 +32,8 @@ class KegiatanController extends Controller
 
         Kegiatan::create([
             'nama_kegiatan' => $request->nama_kegiatan,
-            'tanggal_kegiatan' => Carbon::parse($request->tanggal_kegiatan)->toDateString(),
-            'waktu_mulai' => $request->waktu_mulai,
+            'tanggal_kegiatan' => date('Y-m-d', strtotime($request->tanggal_kegiatan)),
+            'waktu_mulai' => date('H:i:s', strtotime($request->waktu_mulai)),
             'status' => 'aktif',
             'token_link' => Str::random(10),
             'created_by' => auth()->id(),
@@ -62,8 +63,8 @@ class KegiatanController extends Controller
 
         $kegiatan->update([
             'nama_kegiatan' => $request->nama_kegiatan,
-            'tanggal_kegiatan' => Carbon::parse($request->tanggal_kegiatan)->toDateString(),
-            'waktu_mulai' => $request->waktu_mulai,
+            'tanggal_kegiatan' => date('Y-m-d', strtotime($request->tanggal_kegiatan)),
+            'waktu_mulai' => date('H:i:s', strtotime($request->waktu_mulai)),
             'status' => $request->status,
         ]);
 
@@ -86,5 +87,15 @@ class KegiatanController extends Controller
         $kegiatan = Kegiatan::with('kehadiran')->findOrFail($id);
 
         return view('kegiatan.show', compact('kegiatan'));
+    }
+
+    //pdf
+    public function exportPdf($id)
+    {
+        $kegiatan = Kegiatan::with('kehadiran')->findOrFail($id);
+
+        $pdf = Pdf::loadView('kegiatan.pdf', compact('kegiatan'));
+
+        return $pdf->download('laporan-kehadiran-'.$kegiatan->nama_kegiatan.'.pdf');
     }
 }

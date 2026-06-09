@@ -1,181 +1,212 @@
-<x-app-layout>
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+@extends('layouts.app')
 
-            {{-- Header --}}
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h1 class="text-2xl font-semibold text-gray-900">
-                        Kegiatan
-                    </h1>
-                    <p class="text-sm text-gray-500">
-                        Daftar kegiatan yang telah terdaftar.
-                    </p>
-                </div>
+@section('content')
 
-                <div class="flex items-center gap-3">
+@if(session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+</script>
+@endif
 
-                    {{-- Search --}}
-                    <form method="GET"
-                          action="{{ route('kegiatan.index') }}"
-                          class="hidden sm:block">
-                        <input
-                            type="search"
-                            name="q"
-                            value="{{ request('q') }}"
-                            placeholder="Cari kegiatan..."
-                            class="border rounded-md px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        />
-                    </form>
+<div class="container-fluid">
 
-                    {{-- Button tambah --}}
-                    <a href="{{ route('kegiatan.create') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-yellow rounded-md shadow-sm text-sm">
+    <div class="d-flex justify-content-between align-items-center mb-3">
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="h-4 w-4"
-                             fill="none"
-                             viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M12 4v16m8-8H4" />
-                        </svg>
+        <div>
+            <h1 class="m-0">Daftar Kegiatan</h1>
+            <small class="text-muted">
+                Data seluruh kegiatan absensi
+            </small>
+        </div>
 
-                        Tambah Kegiatan
-                    </a>
-                </div>
-            </div>
+        <a href="{{ route('kegiatan.create') }}"
+           class="btn btn-primary">
 
-            {{-- Table --}}
-            <div class="bg-yellow shadow rounded-lg overflow-hidden">
-                <div class="overflow-x-auto">
+            <i class="fas fa-plus"></i>
+            Tambah Kegiatan
 
-                    <table class="min-w-full divide-y divide-gray-200">
+        </a>
 
-                        {{-- Header table --}}
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    No
-                                </th>
+    </div>
 
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Nama Kegiatan
-                                </th>
+    <div class="card shadow-sm">
 
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Tanggal
-                                </th>
+        <div class="card-header">
+            <h3 class="card-title">
+                Tabel Kegiatan
+            </h3>
+        </div>
 
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Waktu
-                                </th>
+        <div class="card-body">
 
-                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
+            <table id="kegiatanTable"
+                   class="table table-bordered table-striped">
 
-                        {{-- Isi table --}}
-                        <tbody class="bg-white divide-y divide-gray-200">
+                <thead>
 
-                            @forelse($kegiatans as $kegiatan)
-                                <tr class="hover:bg-gray-50">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Kegiatan</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
 
-                                    {{-- No --}}
-                                    <td class="px-4 py-3 text-sm">
-                                        {{ $loop->iteration }}
-                                    </td>
+                </thead>
 
-                                    {{-- Nama kegiatan --}}
-                                    <td class="px-4 py-3 text-sm font-medium">
-                                        {{ $kegiatan->nama_kegiatan }}
-                                    </td>
+                <tbody>
 
-                                    {{-- Tanggal --}}
-                                    <td class="px-4 py-3 text-sm">
-                                        {{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d M Y') }}
-                                    </td>
+                    @forelse($kegiatans as $kegiatan)
 
-                                    {{-- Waktu --}}
-                                    <td class="px-4 py-3 text-sm">
-                                        {{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }}
-                                    </td>
+                    <tr>
 
-                                    {{-- Aksi --}}
-                                    <td class="px-4 py-3 text-right">
-                                        <div class="flex justify-end gap-2">
+                        <td>{{ $loop->iteration }}</td>
 
-                                            <a href="{{ route('kegiatan.show', $kegiatan->id) }}"
-                                                class="px-3 py-1 bg-blue-500 text-black rounded">
-                                                    Detail
-                                            </a>
-                                            {{-- Edit --}}
-                                            <a href="{{ route('kegiatan.edit', $kegiatan->id) }}"
-                                               class="px-3 py-1 bg-yellow-400 text-black rounded">
-                                                Edit
-                                            </a>
+                        <td>
+                            <strong>
+                                {{ $kegiatan->nama_kegiatan }}
+                            </strong>
+                        </td>
 
-                                            {{-- Delete --}}
-                                            <form action="{{ route('kegiatan.destroy', $kegiatan->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Yakin hapus kegiatan?')">
+                        <td>
+                            {{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('d M Y') }}
+                        </td>
 
-                                                @csrf
-                                                @method('DELETE')
+                        <td>
+                            {{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }}
+                        </td>
 
-                                                <button type="submit"
-                                                        class="px-3 py-1 bg-red-500 text-black rounded">
-                                                    Hapus
-                                                </button>
-                                            </form>
+                        <td>
 
-                                        </div>
-                                    </td>
+                            @if($kegiatan->status == 'aktif')
 
-                                </tr>
+                                <span class="badge badge-success">
+                                    Aktif
+                                </span>
 
-                            @empty
+                            @else
 
-                                <tr>
-                                    <td colspan="5"
-                                        class="text-center py-6 text-gray-500">
-                                        Belum ada data kegiatan
-                                    </td>
-                                </tr>
+                                <span class="badge badge-danger">
+                                    Selesai
+                                </span>
 
-                            @endforelse
+                            @endif
 
-                        </tbody>
+                        </td>
 
-                    </table>
-                </div>
+                        <td class="text-center">
 
-                {{-- Pagination --}}
-                <div class="px-4 py-3 bg-gray-50 flex justify-between items-center">
+                            <a href="{{ route('kegiatan.show', $kegiatan->id) }}"
+                               class="btn btn-info btn-sm">
 
-                    <div class="text-sm text-gray-600">
-                        Menampilkan
-                        {{ $kegiatans->firstItem() ?? 0 }}
-                        -
-                        {{ $kegiatans->lastItem() ?? 0 }}
+                                <i class="fas fa-eye"></i>
 
-                        dari
+                            </a>
 
-                        {{ $kegiatans->total() ?? 0 }}
-                        data
-                    </div>
+                            <a href="{{ route('kegiatan.edit', $kegiatan->id) }}"
+                               class="btn btn-warning btn-sm">
 
-                    <div>
-                        {{ $kegiatans->links() }}
-                    </div>
+                                <i class="fas fa-edit"></i>
 
-                </div>
-            </div>
+                            </a>
+
+                            <form action="{{ route('kegiatan.destroy', $kegiatan->id) }}"
+                                method="POST"
+                                class="d-inline delete-form">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm">
+
+                                    <i class="fas fa-trash"></i>
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            Belum ada data kegiatan
+                        </td>
+                    </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
 
         </div>
+
     </div>
-</x-app-layout>
+
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+
+    $('#kegiatanTable').DataTable({
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            zeroRecords: "Data tidak ditemukan",
+            emptyTable: "Belum ada data kegiatan",
+            paginate: {
+                previous: "Sebelumnya",
+                next: "Berikutnya"
+            }
+        }
+    });
+
+    $('.delete-form').on('submit', function(e){
+
+        e.preventDefault();
+
+        let form = this;
+
+        Swal.fire({
+            title: 'Hapus Kegiatan?',
+            text: 'Data yang dihapus tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+
+            if(result.isConfirmed){
+                form.submit();
+            }
+
+        });
+
+    });
+
+});
+</script>
+@endpush

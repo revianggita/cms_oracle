@@ -1,78 +1,168 @@
-<x-app-layout>
-    <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+@extends('layouts.app')
 
-            <div class="bg-white shadow rounded-lg p-6">
-                
-                <h1 class="text-2xl font-semibold mb-6">
-                    Tambah Kegiatan
-                </h1>
+@section('content')
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <h1 class="m-0">
+                Tambah Kegiatan
+            </h1>
+
+            <small class="text-muted">
+                Buat kegiatan absensi baru
+            </small>
+        </div>
+
+        <a href="{{ route('kegiatan.index') }}"
+           class="btn btn-secondary">
+
+            <i class="fas fa-arrow-left"></i>
+            Kembali
+
+        </a>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3 class="card-title">
+                Form Tambah Kegiatan
+            </h3>
+
+        </div>
+
+        <form action="{{ route('kegiatan.store') }}"
+              method="POST">
+
+            @csrf
+
+            <div class="card-body">
+
+                {{-- Error Validation --}}
                 @if ($errors->any())
-                    <div class="mb-4 bg-red-100 text-red-700 p-4 rounded">
-                        <ul>
+
+                    <div class="alert alert-danger">
+
+                        <h5>
+                            <i class="icon fas fa-ban"></i>
+                            Terjadi Kesalahan
+                        </h5>
+
+                        <ul class="mb-0">
+
                             @foreach ($errors->all() as $error)
+
                                 <li>{{ $error }}</li>
+
                             @endforeach
+
                         </ul>
+
                     </div>
+
                 @endif
-                <form action="{{ route('kegiatan.store') }}" method="POST">
-                    @csrf
 
-                    {{-- Nama kegiatan --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">
-                            Nama Kegiatan
-                        </label>
-                        <input 
-                            type="text"
-                            name="nama_kegiatan"
-                            value="{{ old('nama_kegiatan') }}"
-                            class="w-full border rounded-lg px-3 py-2"
-                            required
-                        >
+                <div class="row">
+
+                    <!-- Nama Kegiatan -->
+                    <div class="col-md-12">
+
+                        <div class="form-group">
+
+                            <label>
+                                Nama Kegiatan
+                            </label>
+
+                            <input
+                                type="text"
+                                name="nama_kegiatan"
+                                value="{{ old('nama_kegiatan') }}"
+                                class="form-control"
+                                placeholder="Masukkan nama kegiatan"
+                                required
+                            >
+
+                        </div>
+
                     </div>
 
-                    {{-- Tanggal --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">
-                            Tanggal Kegiatan
-                        </label>
-                        <input 
-                            type="date"
-                            name="tanggal_kegiatan"
-                            value="{{ old('tanggal_kegiatan') }}"
-                            class="w-full border rounded-lg px-3 py-2"
-                            required
-                        >
+                    <!-- Tanggal -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label>
+                                Tanggal Kegiatan
+                            </label>
+
+                            <input
+                                type="date"
+                                name="tanggal_kegiatan"
+                                value="{{ old('tanggal_kegiatan') }}"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
                     </div>
 
-                    {{-- Waktu --}}
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">
-                            Waktu Mulai
-                        </label>
-                        <input 
-                            type="time"
-                            name="waktu_mulai"
-                            value="{{ old('waktu_mulai') }}"
-                            class="w-full border rounded-lg px-3 py-2"
-                            required
-                        >
+                    <!-- Waktu -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label>
+                                Waktu Mulai
+                            </label>
+
+                            <input
+                                type="time"
+                                name="waktu_mulai"
+                                value="{{ old('waktu_mulai') }}"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
                     </div>
 
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ route('kegiatan.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-                            Batal
-                        </a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-black rounded-lg hover:bg-indigo-700">
-                            Simpan
-                        </button>
-
-                </form>
+                </div>
 
             </div>
 
-        </div>
+            <!-- Footer -->
+            <div class="card-footer">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="fas fa-save"></i>
+                    Simpan
+
+                </button>
+
+                <a href="{{ route('kegiatan.index') }}"
+                   class="btn btn-secondary">
+
+                    Batal
+
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
-</x-app-layout>
+
+</div>
+
+@endsection

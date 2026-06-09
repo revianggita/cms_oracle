@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KehadiranController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,14 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    //return view('welcome');
-    return redirect('/login');
-});
+Route::view('/', 'landing')->name('landing');
+Route::view('/landing', 'landing');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -57,6 +55,10 @@ Route::middleware('auth')->group(function () {
     // Delete
     Route::delete('/kegiatan/{id}', [KegiatanController::class, 'destroy'])
         ->name('kegiatan.destroy');
+
+    //pdf
+    Route::get('/kegiatan/{id}/pdf', [KegiatanController::class, 'exportPdf'])
+    ->name('kegiatan.pdf');
         
 });
 

@@ -11,6 +11,7 @@ class Kegiatan extends Model
     use HasFactory;
 
     protected $table = 'kegiatan'; // ✔ HARUS SAMA DENGAN MIGRATION
+    public $timestamps = false;
 
     protected $fillable = [
         'nama_kegiatan',
@@ -22,8 +23,7 @@ class Kegiatan extends Model
     ];
 
     protected $casts = [
-        'tanggal_kegiatan' => 'date',
-        'waktu_mulai' => 'datetime:H:i',
+    // 'tanggal_kegiatan' => 'date',
     ];
 
     public function kehadiran()

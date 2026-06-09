@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_kegiatan');
             $table->date('tanggal_kegiatan');
-            $table->time('waktu_mulai');
+            $table->string('waktu_mulai');
             $table->string('token_link')->unique();
             $table->string('status'); // open / closed
 

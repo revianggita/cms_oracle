@@ -1,121 +1,202 @@
-<x-app-layout>
-    <div class="py-8">
-        <div class="max-w-3xl mx-auto">
+@extends('layouts.app')
 
-            <div class="bg-gray-100 shadow rounded-lg p-6">
+@section('content')
 
-                <h1 class="text-2xl font-bold mb-6">
-                    Edit Kegiatan
-                </h1>
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <h1 class="m-0">
+                Edit Kegiatan
+            </h1>
+
+            <small class="text-muted">
+                Ubah informasi kegiatan
+            </small>
+        </div>
+
+        <a href="{{ route('kegiatan.index') }}"
+           class="btn btn-secondary">
+
+            <i class="fas fa-arrow-left"></i>
+            Kembali
+
+        </a>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-warning">
+
+            <h3 class="card-title">
+                Form Edit Kegiatan
+            </h3>
+
+        </div>
+
+        <form action="{{ route('kegiatan.update', $kegiatan->id) }}"
+              method="POST">
+
+            @csrf
+            @method('PUT')
+
+            <div class="card-body">
 
                 {{-- Error Validation --}}
                 @if ($errors->any())
-                    <div class="mb-4 bg-red-100 text-red-700 p-4 rounded">
-                        <ul>
+
+                    <div class="alert alert-danger">
+
+                        <h5>
+                            <i class="icon fas fa-ban"></i>
+                            Terjadi Kesalahan
+                        </h5>
+
+                        <ul class="mb-0">
+
                             @foreach ($errors->all() as $error)
+
                                 <li>{{ $error }}</li>
+
                             @endforeach
+
                         </ul>
+
                     </div>
+
                 @endif
 
-                <form action="{{ route('kegiatan.update', $kegiatan->id) }}"
-                      method="POST">
+                <div class="row">
 
-                    @csrf
-                    @method('PUT')
+                    <!-- Nama -->
+                    <div class="col-md-12">
 
-                    {{-- Nama kegiatan --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">
-                            Nama Kegiatan
-                        </label>
+                        <div class="form-group">
 
-                        <input
-                            type="text"
-                            name="nama_kegiatan"
-                            value="{{ old('nama_kegiatan', $kegiatan->nama_kegiatan) }}"
-                            class="w-full border rounded px-3 py-2"
-                            required
-                        >
-                    </div>
+                            <label>
+                                Nama Kegiatan
+                            </label>
 
+                            <input
+                                type="text"
+                                name="nama_kegiatan"
+                                value="{{ old('nama_kegiatan', $kegiatan->nama_kegiatan) }}"
+                                class="form-control"
+                                placeholder="Masukkan nama kegiatan"
+                                required
+                            >
 
-                    {{-- Tanggal --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">
-                            Tanggal Kegiatan
-                        </label>
-
-                        <input
-                            type="date"
-                            name="tanggal_kegiatan"
-                            value="{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('Y-m-d') }}"
-                            class="w-full border rounded px-3 py-2"
-                            required
-                        >
-                    </div>
-
-
-                    {{-- Waktu --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">
-                            Waktu Mulai
-                        </label>
-
-                        <input
-                            type="time"
-                            name="waktu_mulai"
-                            value="{{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }}"
-                            class="w-full border rounded px-3 py-2"
-                            required
-                        >
-                    </div>
-
-
-                    {{-- Status --}}
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium mb-2">
-                            Status
-                        </label>
-
-                        <select
-                            name="status"
-                            class="w-full border rounded px-3 py-2">
-
-                            <option value="aktif"
-                                {{ $kegiatan->status == 'aktif' ? 'selected' : '' }}>
-                                Aktif
-                            </option>
-
-                            <option value="nonaktif"
-                                {{ $kegiatan->status == 'nonaktif' ? 'selected' : '' }}>
-                                Nonaktif
-                            </option>
-
-                        </select>
-                    </div>
-
-
-                    {{-- Button --}}
-                    <div class="flex gap-3">
-
-                        <button type="submit"
-                                class="bg-indigo-600 text-blackpx-4 py-2 rounded">
-                            Update
-                        </button>
-
-                        <a href="{{ route('kegiatan.index') }}"
-                           class="bg-gray-500 text-black px-4 py-2 rounded">
-                            Kembali
-                        </a>
+                        </div>
 
                     </div>
 
-                </form>
+                    <!-- Tanggal -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label>
+                                Tanggal Kegiatan
+                            </label>
+
+                            <input
+                                type="date"
+                                name="tanggal_kegiatan"
+                                value="{{ \Carbon\Carbon::parse($kegiatan->tanggal_kegiatan)->format('Y-m-d') }}"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- Waktu -->
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            <label>
+                                Waktu Mulai
+                            </label>
+
+                            <input
+                                type="time"
+                                name="waktu_mulai"
+                                value="{{ \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H:i') }}"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-12">
+
+                        <div class="form-group">
+
+                            <label>
+                                Status
+                            </label>
+
+                            <select
+                                name="status"
+                                class="form-control">
+
+                                <option value="aktif"
+                                    {{ $kegiatan->status == 'aktif' ? 'selected' : '' }}>
+
+                                    Aktif
+
+                                </option>
+
+                                <option value="nonaktif"
+                                    {{ $kegiatan->status == 'nonaktif' ? 'selected' : '' }}>
+
+                                    Nonaktif
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+            <!-- Footer -->
+            <div class="card-footer">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="fas fa-save"></i>
+                    Update
+
+                </button>
+
+                <a href="{{ route('kegiatan.index') }}"
+                   class="btn btn-secondary">
+
+                    Batal
+
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
-</x-app-layout>
+
+</div>
+
+@endsection
