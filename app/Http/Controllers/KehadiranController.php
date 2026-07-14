@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kegiatan;
 use App\Models\Kehadiran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class KehadiranController extends Controller
 {
@@ -26,6 +27,27 @@ class KehadiranController extends Controller
     // simpan absensi user
     public function store(Request $request)
     {
+        $captcha = Http::withoutVerifying()
+            ->asForm()
+            ->post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                [
+                    'secret' => env('RECAPTCHA_SECRET_KEY'),
+                    'response' => $request->input('g-recaptcha-response'),
+                ]
+            );
+
+        $result = $captcha->json();
+
+        if (!isset($result['success']) || !$result['success']) {
+
+            return back()
+                ->withErrors([
+                    'captcha' => 'Verifikasi reCAPTCHA gagal.'
+                ])
+                ->withInput();
+        }
+
         $request->validate([
             'kegiatan_id' => 'required',
             'nama' => 'required|string|max:255',

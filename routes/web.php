@@ -3,8 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\LandingContentController;
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Models\Kegiatan;
+use App\Models\Kehadiran;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,8 +20,7 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::view('/', 'landing')->name('landing');
-Route::view('/landing', 'landing');
+Route::get('/', [LandingPageController::class, 'index']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -27,7 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    
+    
     // List kegiatan
     Route::get('/kegiatan', [KegiatanController::class, 'index'])
         ->name('kegiatan.index');
@@ -59,6 +63,18 @@ Route::middleware('auth')->group(function () {
     //pdf
     Route::get('/kegiatan/{id}/pdf', [KegiatanController::class, 'exportPdf'])
     ->name('kegiatan.pdf');
+
+    //kehadiran laporan
+    Route::get('/laporan-kehadiran', [DashboardController::class, 'laporanKehadiran'])
+    ->name('laporan.kehadiran');
+
+    // laporan peserta
+    Route::get('/peserta', [DashboardController::class, 'peserta'])
+    ->name('peserta.index');
+
+    // landing content
+    Route::resource('landing-content', LandingContentController::class)
+    ->except(['show']);
         
 });
 

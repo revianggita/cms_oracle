@@ -147,7 +147,6 @@
 
                     <i class="fas fa-save"></i>
                     Simpan
-
                 </button>
 
                 <a href="{{ route('kegiatan.index') }}"

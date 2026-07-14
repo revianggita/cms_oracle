@@ -118,7 +118,7 @@
                 <!-- QR CODE DI BAWAH INPUT -->
                 <div class="mt-3 text-center">
 
-                    <!-- <img
+                    <img
                         src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ urlencode(url('/absen/'.$kegiatan->token_link)) }}"
                         alt="QR Code Absensi"
                         class="border p-2 rounded"
@@ -126,11 +126,11 @@
 
                     <div class="text-sm text-gray-500 mt-2">
                         Scan QR untuk absensi
-                    </div> -->
+                    </div>
 
-                    <!-- <button onclick="downloadQR()" class="btn btn-primary mt-3">
+                    <button onclick="downloadQR()" class="btn btn-primary mt-3">
                         Download QR
-                    </button> -->
+                    </button>
 
                 </div>
 
